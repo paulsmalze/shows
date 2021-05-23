@@ -37,6 +37,11 @@ def edit(request, show_id):
     return render(request, 'edit.html',context)
 
 def update(request, show_id):
+    errors = Show.objects.basic_validator(request.POST)
+    if len(errors) > 0:
+        for key, value in errors.items():
+            messages.error(request,value)
+        return redirect(f'/{show_id}/edit')
     # updates show
     to_update = Show.objects.get(id=show_id)
     # updates each field
